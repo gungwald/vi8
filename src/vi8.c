@@ -1,3 +1,4 @@
+#include <stdio.h>   /* FILE, fopen, gets, fclose */
 #include <stdbool.h> /* true, false */
 #include <stdint.h>  /* uint8_t, uint16_t */
 #include <conio.h>   /* screensize */
@@ -8,6 +9,8 @@
 #define INPUT_BUF_SIZE   256
 
 /* type */
+enum ReturnStatus {FAILURE, SUCCESS, EOF_REACHED};
+
 struct BufferLine
 {
     char text[MAX_BUF_LINE_LEN];
@@ -59,7 +62,7 @@ bool bIsFull(struct Buffer *b)
         return b->length >= MAX_BUF_LINES;
 }
 
-bool bReadAll(struct Buffer *b, FILE *f)
+void bReadAll(struct Buffer *b, FILE *f)
 {
         bInit(b);
         while (! bIsFull(b))
