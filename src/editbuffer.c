@@ -1,5 +1,5 @@
 #include <string.h>	/* strncpy */
-#include <malloc.h>	/* malloc */
+#include <stdlib.h>	/* malloc */
 
 #include "editbuffer.h"
 
@@ -28,7 +28,7 @@ struct EditBuffer *ebLoad(struct EditBuffer *b, const char *filename)
 {
         f = fopen(filename, "r");
         if (f != NULL) {
-                bReadAllLines(b, f);
+                ebReadAllLines(b, f);
                 fclose(f);
         }
 	return b;
@@ -41,9 +41,10 @@ bool ebIsFull(struct EditBuffer *b)
 
 struct EditBuffer *ebReadAllLines(struct EditBuffer *b, FILE *f)
 {
-        bInit(b);
+        ebInit(b);
         while (!feof(f) && !ferror(f) && !ebIsFull(b))
                 ebReadLine(b, f);
+        return b;
 }
 
 struct EditBuffer *ebReadLine(struct EditBuffer *b, FILE *f)
@@ -65,4 +66,5 @@ struct EditBuffer *ebReadLine(struct EditBuffer *b, FILE *f)
 
         line->length = i;
         ++(b->length);
+        return b;
 }

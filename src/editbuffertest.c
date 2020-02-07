@@ -1,19 +1,17 @@
 #include <stdio.h>
-#include <sput.h>
 
+#include "sput.h"
 #include "editbuffer.h"
+
+struct EditBuffer b;
 
 static void test_ebInit()
 {
-	
-    sput_fail_unless(count_vowels("book")  == 2, "book == 2v");
-    sput_fail_unless(count_vowels("hand")  == 1, "hand == 1v");
-    sput_fail_unless(count_vowels("test")  == 1, "test == 1v");
-    sput_fail_unless(count_vowels("Peter") == 2, "Peter == 2v");
-    sput_fail_unless(count_vowels("Apu")   == 2, "Apu == 2v");
+    sput_fail_unless(ebInit(&b)->length == 0, "init length == 0");
 }
 
 
+/*
 static void test_no_vowels_present()
 {
     sput_fail_unless(count_vowels("GCC") == 0, "GCC == 0v");
@@ -22,6 +20,7 @@ static void test_no_vowels_present()
     sput_fail_unless(count_vowels("GPS") == 0, "GPS == 0v");
     sput_fail_unless(count_vowels("Ltd") == 0, "Ltd == 0v");
 }
+*/
 
 
 int main(int argc, char *argv[])

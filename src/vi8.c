@@ -3,6 +3,8 @@
 #include <stdint.h>  /* uint8_t, uint16_t */
 #include <conio.h>   /* screensize */
 
+#include "editbuffer.h"
+
 /* type */
 enum ReturnStatus {FAILURE, SUCCESS, EOF_REACHED};
 

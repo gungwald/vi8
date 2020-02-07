@@ -2,6 +2,7 @@
 #define EDITBUFFER_H_LKJASDFLKJASDFLK
 
 /* External Modules */
+#include <stdio.h>      /* FILE */
 #include <stdbool.h>	/* bool */
 #include <stdint.h>	/* uint8_t, uint16_t */
 
