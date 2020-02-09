@@ -1,9 +1,18 @@
 #include <stdio.h>
 
-#include "sput.h"
 #include "editbuffer.h"
 
 struct EditBuffer b;
+
+void test_ebInit(const char *testName)
+{
+	TINYTEST_EQUAL(1, ebInit(&b).length == 0);
+	return 1;
+}
+
+TINYTEST_START_SUITE(EditBuffer);
+  TINYTEST_ADD_TEST(test_ebInit,NULL,NULL);
+TINYTEST_END_SUITE();
 
 static void test_ebInit()
 {

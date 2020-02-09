@@ -68,3 +68,4 @@ struct EditBuffer *ebReadLine(struct EditBuffer *b, FILE *f)
         ++(b->length);
         return b;
 }
+

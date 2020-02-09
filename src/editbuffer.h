@@ -6,6 +6,8 @@
 #include <stdbool.h>	/* bool */
 #include <stdint.h>	/* uint8_t, uint16_t */
 
+#include "tinytest.h"
+
 /* Constants */
 #define EB_MAX_LEN      400
 #define EB_MAX_LINE_LEN 100
@@ -35,6 +37,8 @@ extern bool ebIsFull(struct EditBuffer *b);
 extern struct EditBuffer *ebReadAllLines(struct EditBuffer *b, FILE *f);
 extern struct EditBuffer *ebReadLine(struct EditBuffer *b, FILE *f);
 extern char *ebToString(struct EditBuffer *b, uint16_t zeroBasedIndex);
+
+TINYTEST_DECLARE_SUITE(EditBuffer);
 
 #endif
 
