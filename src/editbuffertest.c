@@ -4,9 +4,9 @@
 
 struct EditBuffer b;
 
-void test_ebInit(const char *testName)
+int test_ebInit(const char *testName)
 {
-	TINYTEST_EQUAL(1, ebInit(&b).length == 0);
+	TINYTEST_EQUAL(0, ebInit(&b)->length);
 	return 1;
 }
 
