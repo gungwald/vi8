@@ -166,13 +166,15 @@ void Suite##suiteName(TinyTestRegistry* registry)                       \
   suite->m_next = NULL
   
 #define TINYTEST_ADD_TEST(test,setup,teardown)                          \
+  { \
   TinyTest* test##decl = (TinyTest*)malloc(sizeof(TinyTest));           \
   test##decl->m_func = test;                                            \
   test##decl->m_name = #test;                                           \
   test##decl->m_setup = setup;                                          \
   test##decl->m_teardown = teardown;                                    \
   test##decl->m_next = suite->m_headTest;                               \
-  suite->m_headTest = test##decl         
+  suite->m_headTest = test##decl;         \
+  }
 
 #define TINYTEST_END_SUITE()                                            \
   suite->m_next = registry->m_headSuite;                                \

@@ -13,7 +13,7 @@ TARGETS := apple2
 
 # Name of the final, single-file executable.
 # Default: name of the current dir with target name appended
-PROGRAM :=
+PROGRAM := unit-tests
 
 # Path(s) to additional libraries required for linking the program
 # Use only if you don't want to place copies of the libraries in SRCDIR
@@ -39,7 +39,7 @@ LDFLAGS =
 
 # Path to the directory containing C and ASM sources.
 # Default: src
-SRCDIR :=
+SRCDIR := test
 
 # Path to the directory where object files are to be stored (inside respective target subdirectories).
 # Default: obj
