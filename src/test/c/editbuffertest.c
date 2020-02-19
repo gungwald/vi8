@@ -14,11 +14,6 @@ TINYTEST_START_SUITE(EditBuffer);
   TINYTEST_ADD_TEST(test_ebInit,NULL,NULL);
 TINYTEST_END_SUITE();
 
-static void test_ebInit()
-{
-    sput_fail_unless(ebInit(&b)->length == 0, "init length == 0");
-}
-
 
 /*
 static void test_no_vowels_present()
@@ -32,17 +27,6 @@ static void test_no_vowels_present()
 */
 
 
-int main(int argc, char *argv[])
+void main()
 {
-    sput_start_testing();
-
-    sput_enter_suite("count_vowels(): Vowels Present");
-    sput_run_test(test_vowels_present);
-
-    sput_enter_suite("count_vowels(): No Vowels Present");
-    sput_run_test(test_no_vowels_present);
-
-    sput_finish_testing();
-
-    return sput_get_return_value();
 }
