@@ -39,7 +39,7 @@ LDFLAGS =
 
 # Path to the directory containing C and ASM sources.
 # Default: src
-SRCDIR := test
+SRCDIR := c
 
 # Path to the directory where object files are to be stored (inside respective target subdirectories).
 # Default: obj
