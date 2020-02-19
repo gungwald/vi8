@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "editbuffer.h"
+#include "editbuffertest.h"
 
 struct EditBuffer b;
 

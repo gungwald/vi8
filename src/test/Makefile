@@ -27,7 +27,7 @@ CONFIG  :=
 
 # Additional C compiler flags and options.
 # Default: none
-CFLAGS  =
+CFLAGS  = -I../main/c
 
 # Additional assembler flags and options.
 # Default: none
@@ -220,6 +220,13 @@ SOURCES += $(wildcard $(SRCDIR)/$(TARGETLIST)/*.a65)
 
 # Set OBJECTS to something like 'obj/c64/foo.o obj/c64/bar.o'.
 OBJECTS := $(addsuffix .o,$(basename $(addprefix $(TARGETOBJDIR)/,$(notdir $(SOURCES)))))
+
+#########
+#
+# WLC: Modification below the line
+#
+#########
+OBJECTS += $(wildcard ../main/$(TARGETOBJDIR)/*.o)
 
 # Set DEPENDS to something like 'obj/c64/foo.d obj/c64/bar.d'.
 DEPENDS := $(OBJECTS:.o=.d)
