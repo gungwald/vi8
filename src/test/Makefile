@@ -13,7 +13,7 @@ TARGETS := apple2
 
 # Name of the final, single-file executable.
 # Default: name of the current dir with target name appended
-PROGRAM := unit-tests
+PROGRAM := vi8.unittests
 
 # Path(s) to additional libraries required for linking the program
 # Use only if you don't want to place copies of the libraries in SRCDIR
@@ -35,7 +35,7 @@ ASFLAGS =
 
 # Additional linker flags and options.
 # Default: none
-LDFLAGS =
+LDFLAGS = $(filter-out ../main/$(TARGETOBJDIR)/vi8.o, $(wildcard ../main/$(TARGETOBJDIR)/*.o))
 
 # Path to the directory containing C and ASM sources.
 # Default: src
@@ -220,13 +220,6 @@ SOURCES += $(wildcard $(SRCDIR)/$(TARGETLIST)/*.a65)
 
 # Set OBJECTS to something like 'obj/c64/foo.o obj/c64/bar.o'.
 OBJECTS := $(addsuffix .o,$(basename $(addprefix $(TARGETOBJDIR)/,$(notdir $(SOURCES)))))
-
-#########
-#
-# WLC: Modification below the line
-#
-#########
-OBJECTS += $(wildcard ../main/$(TARGETOBJDIR)/*.o)
 
 # Set DEPENDS to something like 'obj/c64/foo.d obj/c64/bar.d'.
 DEPENDS := $(OBJECTS:.o=.d)
