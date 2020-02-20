@@ -14,8 +14,8 @@ int test_ebInit(const char *testName)
 int test_ebAppendLineCopy(const char *testName)
 {
 	ebAppendLineCopy(ebAppendLineCopy(ebInit(&b), line), line2);
-	TINYTEST_STR_EQUAL_MSG(ebToString(&b, 0), line, testName);
-	TINYTEST_STR_EQUAL_MSG(ebToString(&b, 1), line2, testName);
+	TINYTEST_STR_EQUAL_MSG(ebGetLineCopy(&b, 0), line, testName);
+	TINYTEST_STR_EQUAL_MSG(ebGetLineCopy(&b, 1), line2, testName);
 }
 
 int test_ebIsFull(const char *testName)

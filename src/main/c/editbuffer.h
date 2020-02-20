@@ -34,7 +34,7 @@ extern struct EditBuffer *ebLoad(struct EditBuffer *b, const char *filename);
 extern bool ebIsFull(struct EditBuffer *b);
 extern struct EditBuffer *ebReadAllLines(struct EditBuffer *b, FILE *f);
 extern struct EditBuffer *ebReadLine(struct EditBuffer *b, FILE *f);
-extern char *ebToString(struct EditBuffer *b, uint16_t zeroBasedIndex);
+extern char *ebGetLineCopy(struct EditBuffer *b, uint16_t zeroBasedIndex);
 extern struct EditBuffer* ebAppendLineCopy(struct EditBuffer *b, const char *line);
 
 

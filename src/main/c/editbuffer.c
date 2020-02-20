@@ -13,7 +13,7 @@ struct EditBuffer* ebInit(struct EditBuffer *b)
 	return b;
 }
 
-char* ebToString(struct EditBuffer *b, uint16_t index)
+char* ebGetLineCopy(struct EditBuffer *b, uint16_t index)
 {
 	char *result;
 	size_t requiredSize;
