@@ -4,10 +4,9 @@
 
 struct EditBuffer b;
 
-int test_ebInit(const char *testName)
+int test_ebInit(const char *unusedButRequired)
 {
-	TINYTEST_EQUAL(0, ebInit(&b)->length);
-	return 1;
+	TINYTEST_EQUAL_MSG(0, ebInit(&b)->length, unusedButRequired);
 }
 
 TINYTEST_START_SUITE(EditBuffer);
@@ -25,8 +24,3 @@ static void test_no_vowels_present()
     sput_fail_unless(count_vowels("Ltd") == 0, "Ltd == 0v");
 }
 */
-
-
-void main()
-{
-}

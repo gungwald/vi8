@@ -182,7 +182,7 @@ void Suite##suiteName(TinyTestRegistry* registry)                       \
 }
 
 #define TINYTEST_START_MAIN()                                           \
-  int main(int argc, char* argv[])                                      \
+  void main(void)                                      \
   {                                                                     \
     TinyTestRegistry registry;                                          \
     registry.m_headSuite = NULL
@@ -196,9 +196,9 @@ void Suite##suiteName(TinyTestRegistry* registry)                       \
     TinyTestSuite* ss = NULL;                                           \
     for ( ; s; s = ss )                                                 \
     {                                                                   \
-      ss = s->m_next;                                                   \
       TinyTest* t = s->m_headTest;                                      \
       TinyTest* tt = NULL;                                              \
+      ss = s->m_next;                                                   \
       for ( ; t; t = tt )                                               \
       {                                                                 \
         tt = t->m_next;                                                 \
