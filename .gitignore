@@ -56,3 +56,4 @@ dkms.conf
 
 # 6502 Binaries
 *.apple2
+/build/
