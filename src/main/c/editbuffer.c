@@ -124,5 +124,8 @@ struct EditBuffer *ebCursorLeft(struct EditBuffer *eb)
 		gotox(x);
 		eb->cursorX = x;
 	}
+	else {
+		beep();
+	}
 	return eb;
 }

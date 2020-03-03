@@ -6,9 +6,18 @@
 #include "editbuffer.h"
 #include "globals.h"
 
-void main()
+static char fname[100];
+
+void main(int argc, char *argv[])
 {
     ebInit(&b);
     screensize(&screenWidth, &screenHeight);
+    if (argc > 1) {
+    	ebOpenFile(argv[1]);
+    }
+    else {
+    	printf("File:");
+    	fgets(fname, sizeof(fname), stdin);
+    }
 }
 
