@@ -10,32 +10,35 @@
 #define EB_MAX_LEN      200
 #define EB_MAX_LINE_LEN 80
 
+struct Line
+{
+	char data[EB_MAX_LINE_LEN];
+	uint8_t length;
+};
+
 /* Types */
 struct EditBuffer
 {
 	/* Basically a 2-dim array but also stores the length of each line.*/
-	struct Line
-	{
-		char data[EB_MAX_LINE_LEN];
-		uint8_t length;
-	} 
-	lines[EB_MAX_LEN];
+	struct Line lines[EB_MAX_LEN];
 
 	/* Line count */
-	uint16_t length;
+	uint16_t lineCount;
 
-	uint8_t cursorLineIndex;
-	uint16_t cursorLine;
+	uint8_t  cursorX; /* 0-based */
+	uint16_t cursorY; /* 0-based */
 };
 
 /* Function Frototypes */
-extern struct EditBuffer *ebInit(struct EditBuffer *b);
-extern struct EditBuffer *ebLoad(struct EditBuffer *b, const char *filename);
-extern bool ebIsFull(struct EditBuffer *b);
-extern struct EditBuffer *ebReadAllLines(struct EditBuffer *b, FILE *f);
-extern struct EditBuffer *ebReadLine(struct EditBuffer *b, FILE *f);
-extern char *ebGetLineCopy(struct EditBuffer *b, uint16_t zeroBasedIndex);
-extern struct EditBuffer* ebAppendLineCopy(struct EditBuffer *b, const char *line);
+extern struct EditBuffer *ebInit(struct EditBuffer *eb);
+extern struct EditBuffer *ebLoad(struct EditBuffer *eb, const char *filename);
+extern bool ebIsFull(struct EditBuffer *eb);
+extern struct EditBuffer *ebReadAllLines(struct EditBuffer *eb, FILE *f);
+extern struct EditBuffer *ebReadLine(struct EditBuffer *eb, FILE *f);
+extern char *ebGetLineCopy(struct EditBuffer *eb, uint16_t zeroBasedIndex);
+extern struct EditBuffer* ebAppendLineCopy(struct EditBuffer *eb, const char *line);
+extern struct EditBuffer *ebCursorRight(struct EditBuffer *eb);
+extern struct EditBuffer *ebCursorLeft(struct EditBuffer *eb);
 
 
 #endif

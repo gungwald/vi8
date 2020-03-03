@@ -4,14 +4,7 @@
 #include <conio.h>   /* screensize */
 
 #include "editbuffer.h"
-
-/* type */
-enum ReturnStatus {FAILURE, SUCCESS, EOF_REACHED};
-
-/* var */
-struct EditBuffer b;
-unsigned char screenWidth;
-unsigned char screenHeight;
+#include "globals.h"
 
 void main()
 {

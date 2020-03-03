@@ -8,7 +8,7 @@ const char *line2 = "silliness";
 
 int test_ebInit(const char *testName)
 {
-	TINYTEST_EQUAL_MSG(0, ebInit(&b)->length, testName);
+	TINYTEST_EQUAL_MSG(0, ebInit(&b)->lineCount, testName);
 }
 
 int test_ebAppendLineCopy(const char *testName)
@@ -26,7 +26,7 @@ int test_ebIsFull(const char *testName)
 
 int test_ebToString(const char *testName)
 {
-	TINYTEST_EQUAL_MSG(0, ebInit(&b)->length, testName);
+	TINYTEST_EQUAL_MSG(0, ebInit(&b)->lineCount, testName);
 }
 
 TINYTEST_START_SUITE(EditBuffer);

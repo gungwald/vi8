@@ -7,9 +7,9 @@ static FILE *f;
 
 struct EditBuffer* ebInit(struct EditBuffer *b)
 {
-	b->length = 0;
-	b->cursorLine = 0;
-	b->cursorLineIndex = 0;
+	b->lineCount = 0;
+	b->cursorX = 0;
+	b->cursorY = 0;
 	return b;
 }
 
@@ -39,7 +39,7 @@ struct EditBuffer* ebLoad(struct EditBuffer *b, const char *filename)
 
 bool ebIsFull(struct EditBuffer *b)
 {
-	return b->length >= EB_MAX_LEN;
+	return b->lineCount >= EB_MAX_LEN;
 }
 
 struct EditBuffer* ebReadAllLines(struct EditBuffer *b, FILE *f)
@@ -58,9 +58,9 @@ struct EditBuffer* ebReadLine(struct EditBuffer *b, FILE *f)
 	char *data;
 	struct Line *line;
 
-	if (b->length < EB_MAX_LEN)
+	if (b->lineCount < EB_MAX_LEN)
 	{
-		lineIndex = b->length;
+		lineIndex = b->lineCount;
 		line = &(b->lines[lineIndex]);
 		data = line->data;
 		while (i < EB_MAX_LINE_LEN && (c = getc(f)) != EOF && c != '\r')
@@ -70,7 +70,7 @@ struct EditBuffer* ebReadLine(struct EditBuffer *b, FILE *f)
 			perror("Read failed");
 
 		line->length = i;
-		++(b->length);
+		++(b->lineCount);
 	}
 	else
 	{
@@ -84,14 +84,14 @@ struct EditBuffer* ebAppendLineCopy(struct EditBuffer *b, const char *line)
 	struct Line *destLine;
 	char *destData;
 
-	if (b->length < EB_MAX_LEN)
+	if (b->lineCount < EB_MAX_LEN)
 	{
-		destLine = &(b->lines[b->length]);
+		destLine = &(b->lines[b->lineCount]);
 		destData = destLine->data;
 		strncpy(destData, line, EB_MAX_LINE_LEN + 1);
 		destData[EB_MAX_LINE_LEN]; /* Required fail-safe */
 		destLine->length = strlen(destData);
-		++(b->length);
+		++(b->lineCount);
 	}
 	else
 	{
@@ -100,3 +100,29 @@ struct EditBuffer* ebAppendLineCopy(struct EditBuffer *b, const char *line)
 	return b;
 }
 
+struct EditBuffer *ebCursorRight(struct EditBuffer *eb)
+{
+	unsigned char x;
+
+	x = wherex();
+	if (x < screenWidth-1) {
+		x--;
+		gotox(x);
+		eb->cursorX = x;
+	}
+	return eb;
+}
+
+struct EditBuffer *ebCursorLeft(struct EditBuffer *eb)
+{
+	unsigned char x;
+
+	/* x is unsigned so must stay 0 or greater. */
+	x = wherex();
+	if (x > 0) {
+		x--;
+		gotox(x);
+		eb->cursorX = x;
+	}
+	return eb;
+}
