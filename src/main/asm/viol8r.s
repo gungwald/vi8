@@ -1,3 +1,12 @@
+		typ $ff			;File type of generated executable to be SYSTEM
+		dsk viol8r.b	;Specify name of executable for following code
+
+		use symbols		;Include equates
+		use macros		;Include macros
+
+bufmaxx equ 80
+bufmaxy equ	100
+
 * Translate a line to its memory address
 * ]1 - The line number, 0-based
 * ]2 - Address for the result, zero-page or absolute
@@ -12,8 +21,27 @@ ln2addr	mac
 		sta ]2+1		;Store high byte at result address
 		eom
 
-		org $300
+dline	mac
+		eom
 
+draw	mac
+		lda #0
+		sta	yindex
+nextln  cmp linecnt
+		bge enddraw
+		>>>	dline(yindex
+		inc	yindex
+		lda	yindex
+		jmp nextln
+enddraw eom
+
+* Main program
+		org $2000
+		rts
+
+linecnt db  0
+yindex 	db	0
+xindex	db	0
 screenx	db	0
 screeny	db	0
 bufferx	db	0
