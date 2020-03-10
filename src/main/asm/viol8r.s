@@ -37,6 +37,7 @@ enddraw eom
 
 * Main program
 		org $2000
+main	>>>	draw
 		rts
 
 linecnt db  0
