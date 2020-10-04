@@ -1,68 +1,42 @@
-#include <stdint.h>
-
-#define TEXT_LINE_1 0x0400
- 
 /*
 Table 7-2. Text screen video RAM addresses.
-Line Number
-0
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
 Base Address
-$400
-$480
-$500
-$580
-$600
-$680
-$700
-$780
-$428
-$4A8
-$528
-$5A8
-Line Number
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-Base Address
-$628
-$6A8
-$728
-$7A8
-$450
-$400
-$550
-$500
-$650
-$600
-$750
-$700
+ 0 $400
+ 1 $480
+ 2 $500
+ 3 $580
+ 4 $600
+ 5 $680
+ 6 $700
+ 7 $780
+ 8 $428
+ 9 $4A8
+10 $528
+11 $5A8
+12 $628
+13 $6A8
+14 $728
+15 $7A8
+16 $450
+17 $400
+18 $550
+19 $500
+20 $650
+21 $600
+22 $750
+23 $700
 */
+
+#define TXTPG1 ((char *) 0x0400)
+#define NORMAL(ch) (ch | 0x80)
 
 void main(void)
 {
-	uint8_t *p;
+	char *p, *endp;
+	char c;
 
-	for (p = (uint8_t *) 0x0400; 
-			p < (uint8_t *) 0x0440; ++p)
-		*p = 'A';
+	endp = TXTPG1 + 40;
+	c = NORMAL('A');
+	for (p = TXTPG1; p < endp; ++p)
+		*p = c;
 }
