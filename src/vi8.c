@@ -24,14 +24,14 @@ void main(void)
     char c;
     uint8_t line;
     char *cellAddress;
-    const char *startAddress;
-    const char *endAddress;
+    char *startAddress;
+    char *endAddress;
 
     for (line = 0; line < SCREEN_HEIGHT; ++line) {
-        startAddress = lineAddresses[line];
+        startAddress = (char *) lineAddresses[line];
 	endAddress = startAddress + SCREEN_WIDTH;
     	c = NORMAL(line + 0x40);
-        for (cellAddress = (char *) startAddress; cellAddress < endAddress; ++cellAddress) {
+        for (cellAddress = startAddress; cellAddress < endAddress; ++cellAddress) {
             *cellAddress = c;
 	}
     }
@@ -39,5 +39,5 @@ void main(void)
 
 void displayLine(uint16_t bufferLine, uint8_t screenLine)
 {
-    const char *screenLineAddress = lineAddresses[screenLine];
+    char *screenLineAddress = (char *) lineAddresses[screenLine];
 }
