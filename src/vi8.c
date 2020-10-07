@@ -1,4 +1,7 @@
+#include <stdio.h>
 #include <stdint.h>
+#include <time.h>
+#include <conio.h>
 
 #define NORMAL(ch) (ch | 0x80)
 #define SCREEN_WIDTH 40
@@ -19,7 +22,50 @@ uint8_t cursorY = 0;
 uint8_t bufferX = 0;
 uint16_t bufferY = 0;
 
+void writeWithConio(void);
+void writeToMemory(void);
+
 void main(void)
+{
+    int i;
+    time_t startTime, middleTime, endTime;
+
+    startTime = time(NULL);
+    for (i = 0; i < 10; ++i) {
+    	clrscr();
+    	writeWithConio();
+    }
+    middleTime = time(NULL);
+    for (i = 0; i < 10; ++i) {
+    	clrscr();
+    	writeToMemory();
+    }
+    endTime = time(NULL);
+    clrscr();
+    printf("%lu\n%lu\n%lu\n", 
+		    startTime, 
+		    middleTime, 
+		    endTime);
+    printf("conio_time=%lu mem_time=%lu\n", 
+		    middleTime - startTime,
+		    endTime - middleTime);
+}
+
+void writeWithConio(void)
+{
+    char c;
+    uint8_t line;
+    uint8_t col;
+
+    for (line = 0; line < SCREEN_HEIGHT; ++line) {
+    	c = NORMAL(line + 0x40);
+        for (col = 0; col < SCREEN_WIDTH; ++col) {
+            cputcxy(col, line, c);
+	}
+    }
+}
+
+void writeToMemory(void)
 {
     char c;
     uint8_t line;
