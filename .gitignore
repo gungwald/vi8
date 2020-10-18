@@ -1,4 +1,10 @@
 .DS_Store
+obj/
+
+# 6502 Binaries
+*.apple2
+/build/
+vi8.dsk
 
 # Prerequisites
 *.d
@@ -55,7 +61,3 @@ dkms.conf
 
 # Vim
 *.swp
-
-# 6502 Binaries
-*.apple2
-/build/
