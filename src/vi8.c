@@ -27,12 +27,17 @@ void writeToMemory(void);
 void main(void) {
 	int i;
 
+	cursor(1);
+	clrscr();
+	cputs("Press a key to start");
+	cgetc();
 	for (i = 0; i < 10; ++i) {
 		clrscr();
 		writeWithConio();
 	}
+	clrscr();
 	cputs("Press a key to continue");
-	kbhit();
+	cgetc();
 	for (i = 0; i < 10; ++i) {
 		clrscr();
 		writeToMemory();
