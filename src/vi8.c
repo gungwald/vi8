@@ -3,6 +3,8 @@
 #include <time.h>
 #include <conio.h>
 
+extern void writeWithAsm(void);
+
 #define NORMAL(ch) (ch | 0x80)
 #define SCREEN_WIDTH 40
 #define SCREEN_HEIGHT 24
@@ -22,25 +24,32 @@ uint8_t bufferX = 0;
 uint16_t bufferY = 0;
 
 void writeWithConio(void);
+void writeToMemoryArray(void);
 void writeToMemory(void);
 
 void main(void) {
 	int i;
 
 	cursor(1);
-	clrscr();
-	cputs("Press a key to start");
-	cgetc();
-	for (i = 0; i < 10; ++i) {
+	for (i = 0; i < 5; ++i) {
 		clrscr();
 		writeWithConio();
+		cputs("conio - Press a key to continue"); cgetc();
 	}
-	clrscr();
-	cputs("Press a key to continue");
-	cgetc();
-	for (i = 0; i < 10; ++i) {
+	for (i = 0; i < 5; ++i) {
+		clrscr();
+		writeToMemoryArray();
+		cputs("memoryArray - Press a key to continue"); cgetc();
+	}
+	for (i = 0; i < 5; ++i) {
 		clrscr();
 		writeToMemory();
+		cputs("memory - Press a key to continue"); cgetc();
+	}
+	for (i = 0; i < 5; ++i) {
+		clrscr();
+		writeWithAsm();
+		cputs("asm - Press a key to continue"); cgetc();
 	}
 	clrscr();
 }
@@ -58,21 +67,37 @@ void writeWithConio(void) {
 	}
 }
 
-void writeToMemory(void) {
+void writeToMemoryArray(void) {
+	char *startAddress;
 	char c;
 	uint8_t line;
-	char *cellAddress;
-	char *startAddress;
-	char *endAddress;
+	uint8_t column;
 
 	for (line = 0; line < SCREEN_HEIGHT; ++line) {
-		startAddress = (char *) lineAddresses[line];
-		endAddress = startAddress + SCREEN_WIDTH;
 		c = NORMAL(line + 0x40);
-		for (cellAddress = startAddress; cellAddress < endAddress;
-				++cellAddress) {
-			*cellAddress = c;
+		startAddress = (char *) lineAddresses[line];
+		for (column = 0; column < SCREEN_WIDTH; ++column) {
+			startAddress[column] = c;
 		}
+	}
+}
+
+void writeToMemory(void) {
+	char *addr;
+	char c;
+	register uint8_t line;
+	register uint8_t column;
+	char **lineAddress;
+
+	lineAddress = (char **) lineAddresses;
+	for (line = 0; line < SCREEN_HEIGHT; ++line) {
+		c = NORMAL(line + 0x40);
+		addr = *lineAddress;
+		for (column = 0; column < SCREEN_WIDTH; ++column) {
+			*addr = c;
+			++addr;
+		}
+		++lineAddress;
 	}
 }
 
