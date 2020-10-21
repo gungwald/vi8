@@ -8,6 +8,8 @@ extern void writeWithAsm(void);
 #define NORMAL(ch) (ch | 0x80)
 #define SCREEN_WIDTH 40
 #define SCREEN_HEIGHT 24
+#define BUFFER_MAX_COLUMNS 80
+#define BUFFER_MAX_LINES 256
 
 const char *lineAddresses[] = { (char *) 0x400, (char *) 0x480, (char *) 0x500,
 		(char *) 0x580, (char *) 0x600, (char *) 0x680, (char *) 0x700,
@@ -17,11 +19,15 @@ const char *lineAddresses[] = { (char *) 0x400, (char *) 0x480, (char *) 0x500,
 		(char *) 0x5D0, (char *) 0x650, (char *) 0x6D0, (char *) 0x750,
 		(char *) 0x7D0 };
 
-uint8_t cursorX = 0;
-uint8_t cursorY = 0;
-
-uint8_t bufferX = 0;
-uint16_t bufferY = 0;
+struct Buffer {
+	char text[BUFFER_MAX_LINES][BUFFER_MAX_COLUMNS];
+	uint8_t length;
+	uint8_t lineLengths[BUFFER_MAX_LINES];
+	uint8_t screenTopLeftX;
+	uint8_t screenTopLeftY;
+	uint8_t cursorX;
+	uint8_t cursorY;
+};
 
 void writeWithConio(void);
 void writeToMemoryArray(void);
