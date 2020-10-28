@@ -1,5 +1,6 @@
 .DS_Store
 obj/
+*.asm.list
 
 # 6502 Binaries
 *.apple2

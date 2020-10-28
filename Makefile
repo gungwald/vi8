@@ -11,7 +11,7 @@ $(DISK): $(PROGRAM)
 	$(AC) -p $@ $< bin 0x803 < $< || $(RM) $@
 
 $(PROGRAM): $(PROGRAM).s
-	cl65 -t $(TARGET) -o $@ $< -C $(TARGET)-asm.cfg
+	cl65 -t $(TARGET) -C $(TARGET)-asm.cfg -l $@.asm.list -o $@ $< 
 
 clean: 
-	$(RM) $(DISK) $(PROGRAM)
+	$(RM) $(DISK) $(PROGRAM) $(PROGRAM).asm.list
