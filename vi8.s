@@ -18,54 +18,60 @@ BUFFER_ADDRESS	= 8
 	copy	dest+1,{src,X}
 .endmacro
 
-main:	
+;;;;;;;;;;;;;;;;
+;              ;
+; Main Program ;
+;              ;
+;;;;;;;;;;;;;;;;
 	cld					; Ensure integer mode, not BCD
+        jsr     loadTestFile
+        jsr     display
+        rts
+
+.proc   display
 	ldx	#0				; X holds the screen line number
 	copy	bufferLine,topLine
-
 nextLine:
 	copyix	LINE_ADDRESS,lineAddresses	; Address of beginning of line
 	ldy	#0				; Y holds the screen column number
 	copy	bufferColumn,topColumn		; Init starting column in buffer
 	jsr	getBufferAddress		; Get start address of line in buffer
-
 nextChar:
 	copy	{(LINE_ADDRESS),y},{BUFFER_ADDRESS,y}
-
-	; Progress across columns
 	iny					; Increment column
 	inc	bufferColumn
 	
 	lda	bufferColumn			; Check for end-of-line
 	cmp	lineLengths,Y
 	bmi	widthCheck
-	jsr	spacesToEol
-
+	jsr	spacesToScreenEdge
+        jmp     advanceLine
 widthCheck:
 	cpy	#SCREEN_WIDTH
 	bmi	nextChar
-
-	; Progress down lines
+advanceLine:
 	inc	bufferLine			; Increment buffer line
 	inx
 
 	cpx	#SCREEN_HEIGHT * 2
 	bmi	nextLine
 	rts
+.endproc
 
-spacesToEol:
+.proc   spacesToScreenEdge
 	cpy	#SCREEN_WIDTH
 	bpl	done
 	lda	#$A0				; Space with high-bit set
 	iny
-	jmp	spacesToEol
+	jmp	spacesToScreenEdge
 done	rts
+.endproc
 
 ;
 ; BUFFER_ADDRESS = buffer[displayBufferY][displayBufferX]
 ; BUFFER_ADDRESS = buffer + (displayBufferY * BUFFER_WIDTH) + displayBufferX 
 ;
-getBufferAddress:
+.proc   getBufferAddress
 	lda	#0
 	sta	BUFFER_ADDRESS+1
 
@@ -96,8 +102,13 @@ getBufferAddress:
 	adc	#>buffer
 	sta	BUFFER_ADDRESS+1
 	rts
+.endproc
 
-;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;
+;                ;
+; End of Program ;
+;                ;
+;;;;;;;;;;;;;;;;;;
 
 .segment "DATA"
 
