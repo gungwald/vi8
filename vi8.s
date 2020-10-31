@@ -2,20 +2,39 @@ SCREEN_WIDTH	= 40
 SCREEN_HEIGHT	= 24
 BUFFER_WIDTH	= 64
 BUFFER_HEIGHT	= 256
-LINE_ADDRESS	= 6
-BUFFER_ADDRESS	= 8
+LINE_ADDR	= 6
+BUFFER_ADDR	= 8
 
 .segment "CODE"
 
-.macro	copy	dest,src
+;
+; Copies one byte from src address to dest address. 
+; A is destroyed.
+; 
+.macro	cpByte	dest,src
 	lda	src
 	sta	dest
 .endmacro
 
-.macro	copyix	dest,src
-	copy	dest,{src,X}
+;
+; Copies two bytes from src+X address to dest address and src+X+1 to dest+1.
+; A is destroyed.
+; X is incremented.
+;
+.macro	cpWordX	dest,src
+	cpByte	dest,{src,X}
 	inx
-	copy	dest+1,{src,X}
+	cpByte	dest+1,{src,X}
+.endmacro
+
+.macro	addAddr	addend1,addend2
+	lda	addend1
+	clc
+	adc	addend2
+	sta	addend1
+	lda	addend1+1
+	adc	addend2+1
+	sta	addend1+1
 .endmacro
 
 ;;;;;;;;;;;;;;;;
@@ -30,14 +49,14 @@ BUFFER_ADDRESS	= 8
 
 .proc   display
 	ldx	#0				; X holds the screen line number
-	copy	bufferLine,topLine
+	cpByte	bufferLine,topLine
 nextLine:
-	copyix	LINE_ADDRESS,lineAddresses	; Address of beginning of line
+	cpWordX	LINE_ADDR,lineAddresses		; Address of beginning of line
 	ldy	#0				; Y holds the screen column number
-	copy	bufferColumn,topColumn		; Init starting column in buffer
-	jsr	getBufferAddress		; Get start address of line in buffer
+	cpByte	bufferColumn,topColumn		; Init starting column in buffer
+	jsr	getBufferCellAddress		; Get start address of line in buffer
 nextChar:
-	copy	{(LINE_ADDRESS),y},{BUFFER_ADDRESS,y}
+	cpByte	{(LINE_ADDR),y},{BUFFER_ADDR,y}
 	iny					; Increment column
 	inc	bufferColumn
 	
@@ -71,9 +90,8 @@ done	rts
 ; BUFFER_ADDRESS = buffer[displayBufferY][displayBufferX]
 ; BUFFER_ADDRESS = buffer + (displayBufferY * BUFFER_WIDTH) + displayBufferX 
 ;
-.proc   getBufferAddress
-	lda	#0
-	sta	BUFFER_ADDRESS+1
+.proc   getBufferCellAddress
+	cpByte	BUFFER_ADDRESS+1,#0
 
 	lda	bufferLine
 
@@ -91,16 +109,7 @@ done	rts
 	asl	a			; Left shift lo-byte in A
 	rol	BUFFER_ADDRESS+1	; Left shift carry into hi-byte
 	sta	BUFFER_ADDRESS
-		
-	; BUFFER_ADDRESS(lo-byte) = BUFFER_ADDRESS(lo-byte) + buffer(lo-byte)
-	clc
-	adc	#<buffer
-	sta	BUFFER_ADDRESS
-
-	; Same for hi-byte. Previous value of carry is added in auto
-	lda	BUFFER_ADDRESS+1
-	adc	#>buffer
-	sta	BUFFER_ADDRESS+1
+	addWord BUFFER_ADDRESS,#<buffer
 	rts
 .endproc
 
