@@ -2,8 +2,8 @@ SCREEN_WIDTH	= 40
 SCREEN_HEIGHT	= 24
 BUFFER_WIDTH	= 64
 BUFFER_HEIGHT	= 256
-LINE_ADDR	= 6
-BUFFER_ADDR	= 8
+LINE_ADDRESS	= 6
+BUFFER_ADDRESS	= 8
 
 .segment "CODE"
 
@@ -27,7 +27,11 @@ BUFFER_ADDR	= 8
 	cpByte	dest+1,{src,X}
 .endmacro
 
-.macro	addAddr	addend1,addend2
+;
+; Add addend2 to addend1 storing the result at addend1.
+; A is destroyed.
+;
+.macro	addWord	addend1,addend2
 	lda	addend1
 	clc
 	adc	addend2
@@ -51,12 +55,12 @@ BUFFER_ADDR	= 8
 	ldx	#0				; X holds the screen line number
 	cpByte	bufferLine,topLine
 nextLine:
-	cpWordX	LINE_ADDR,lineAddresses		; Address of beginning of line
+	cpWordX	LINE_ADDRESS,lineAddresses		; Address of beginning of line
 	ldy	#0				; Y holds the screen column number
 	cpByte	bufferColumn,topColumn		; Init starting column in buffer
 	jsr	getBufferCellAddress		; Get start address of line in buffer
 nextChar:
-	cpByte	{(LINE_ADDR),y},{BUFFER_ADDR,y}
+	cpByte	{(LINE_ADDRESS),y},{BUFFER_ADDRESS,y}
 	iny					; Increment column
 	inc	bufferColumn
 	
@@ -83,7 +87,7 @@ advanceLine:
 	lda	#$A0				; Space with high-bit set
 	iny
 	jmp	spacesToScreenEdge
-done	rts
+done:	rts
 .endproc
 
 ;
