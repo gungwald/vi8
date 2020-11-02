@@ -11,7 +11,7 @@ BUFFER_ADDRESS	= 8
 ; Copies one byte from src address to dest address. 
 ; A is destroyed.
 ; 
-.macro	cpByte	dest,src
+.macro	copyByte dest,src
 	lda	src
 	sta	dest
 .endmacro
@@ -21,10 +21,10 @@ BUFFER_ADDRESS	= 8
 ; A is destroyed.
 ; X is incremented.
 ;
-.macro	cpWordX	dest,src
-	cpByte	dest,{src,X}
+.macro	copyWordX dest,src
+	copyByte dest,{src,X}
 	inx
-	cpByte	dest+1,{src,X}
+	copyByte dest+1,{src,X}
 .endmacro
 
 ;
@@ -41,6 +41,26 @@ BUFFER_ADDRESS	= 8
 	sta	addend1+1
 .endmacro
 
+;
+; Left shift is multiply by 2 ^ count
+; 
+.macro	shiftWordLeft wordAddress,count
+	txa			; Move X to pushing position
+	pha			; Store X onto the stack
+	ldx	#0		; Begin, initializing X
+	lda	wordAddress	; Low byte of what to shift
+next:
+	asl	a		; Left shift lo-byte in A
+	rol	wordAddress+1	; Left shift carry into hi-byte
+	cpy	count
+	inx
+	bmi	next
+	sta	wordAddress	; Store what we're holding in A
+	pla			; Restore X
+	tax
+.endmacro
+
+
 ;;;;;;;;;;;;;;;;
 ;              ;
 ; Main Program ;
@@ -53,14 +73,14 @@ BUFFER_ADDRESS	= 8
 
 .proc   display
 	ldx	#0				; X holds the screen line number
-	cpByte	bufferLine,topLine
+	copyByte bufferLine,topLine
 nextLine:
-	cpWordX	LINE_ADDRESS,lineAddresses		; Address of beginning of line
+	copyWordX LINE_ADDRESS,lineAddresses	; Address of beginning of line
 	ldy	#0				; Y holds the screen column number
-	cpByte	bufferColumn,topColumn		; Init starting column in buffer
+	copyByte bufferColumn,topColumn		; Init starting column in buffer
 	jsr	getBufferCellAddress		; Get start address of line in buffer
 nextChar:
-	cpByte	{(LINE_ADDRESS),y},{BUFFER_ADDRESS,y}
+	copyByte {(LINE_ADDRESS),y},{BUFFER_ADDRESS,y}
 	iny					; Increment column
 	inc	bufferColumn
 	
@@ -95,24 +115,9 @@ done:	rts
 ; BUFFER_ADDRESS = buffer + (displayBufferY * BUFFER_WIDTH) + displayBufferX 
 ;
 .proc   getBufferCellAddress
-	cpByte	BUFFER_ADDRESS+1,#0
-
-	lda	bufferLine
-
-	; Shift address (2 bytes) left 6 times which is multiply by 64
-	asl	a			; Left shift lo-byte in A
-	rol	BUFFER_ADDRESS+1	; Left shift carry into hi-byte
-	asl	a			; Left shift lo-byte in A
-	rol	BUFFER_ADDRESS+1	; Left shift carry into hi-byte
-	asl	a			; Left shift lo-byte in A
-	rol	BUFFER_ADDRESS+1	; Left shift carry into hi-byte
-	asl	a			; Left shift lo-byte in A
-	rol	BUFFER_ADDRESS+1	; Left shift carry into hi-byte
-	asl	a			; Left shift lo-byte in A
-	rol	BUFFER_ADDRESS+1	; Left shift carry into hi-byte
-	asl	a			; Left shift lo-byte in A
-	rol	BUFFER_ADDRESS+1	; Left shift carry into hi-byte
-	sta	BUFFER_ADDRESS
+	copyByte BUFFER_ADDRESS,bufferLine
+	copyByte BUFFER_ADDRESS+1,#0
+	shiftWordLeft BUFFER_ADDRESS,6		; Multiply by 64
 	addWord BUFFER_ADDRESS,#<buffer
 	rts
 .endproc
