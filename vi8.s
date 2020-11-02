@@ -11,7 +11,7 @@ BUFFER_ADDRESS	= 8
 ; Copies one byte from src address to dest address. 
 ; A is destroyed.
 ; 
-.macro	copyByte dest,src
+.macro	cpByte dest,src
 	lda	src
 	sta	dest
 .endmacro
@@ -21,10 +21,10 @@ BUFFER_ADDRESS	= 8
 ; A is destroyed.
 ; X is incremented.
 ;
-.macro	copyWordX dest,src
-	copyByte dest,{src,X}
+.macro	cpWordX dest,src
+	cpByte	dest,{src,X}
 	inx
-	copyByte dest+1,{src,X}
+	cpByte	dest+1,{src,X}
 .endmacro
 
 ;
@@ -44,7 +44,7 @@ BUFFER_ADDRESS	= 8
 ;
 ; Left shift is multiply by 2 ^ count
 ; 
-.macro	shiftWordLeft wordAddress,count
+.macro	shWdLft wordAddress,count
 	txa			; Move X to pushing position
 	pha			; Store X onto the stack
 	ldx	#0		; Begin, initializing X
@@ -72,16 +72,16 @@ next:
         rts
 
 .proc   display
-	ldx	#0				; X holds the screen line number
-	copyByte bufferLine,topLine
+	ldx	#0			; X holds the screen line number
+	cpByte	bufferLine,topLine
 nextLine:
-	copyWordX LINE_ADDRESS,lineAddresses	; Address of beginning of line
-	ldy	#0				; Y holds the screen column number
-	copyByte bufferColumn,topColumn		; Init starting column in buffer
-	jsr	getBufferCellAddress		; Get start address of line in buffer
+	cpWordX	LINE_ADDRESS,lineAddresses ; Address of beginning of line
+	ldy	#0			; Y holds the screen column number
+	cpByte	bufferColumn,topColumn	; Init starting column in buffer
+	jsr	getBufferCellAddress	; Get start address of line in buffer
 nextChar:
-	copyByte {(LINE_ADDRESS),y},{BUFFER_ADDRESS,y}
-	iny					; Increment column
+	cpByte	{(LINE_ADDRESS),y},{BUFFER_ADDRESS,y}
+	iny				; Increment column
 	inc	bufferColumn
 	
 	lda	bufferColumn			; Check for end-of-line
@@ -115,10 +115,10 @@ done:	rts
 ; BUFFER_ADDRESS = buffer + (displayBufferY * BUFFER_WIDTH) + displayBufferX 
 ;
 .proc   getBufferCellAddress
-	copyByte BUFFER_ADDRESS,bufferLine
-	copyByte BUFFER_ADDRESS+1,#0
-	shiftWordLeft BUFFER_ADDRESS,6		; Multiply by 64
-	addWord BUFFER_ADDRESS,#<buffer
+	cpByte		BUFFER_ADDRESS,bufferLine
+	cpByte 		BUFFER_ADDRESS+1,#0
+	shiftWordLeft	BUFFER_ADDRESS,6		; Multiply by 64
+	addWord		BUFFER_ADDRESS,#<buffer
 	rts
 .endproc
 
