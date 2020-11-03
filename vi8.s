@@ -11,7 +11,7 @@ BUFFER_ADDRESS	= 8
 ; Copies one byte from src address to dest address. 
 ; A is destroyed.
 ; 
-.macro	cpByte dest,src
+.macro	cpByte	dest,src
 	lda	src
 	sta	dest
 .endmacro
@@ -66,7 +66,7 @@ next:
 ; Main Program ;
 ;              ;
 ;;;;;;;;;;;;;;;;
-	cld					; Ensure integer mode, not BCD
+	cld				; Ensure integer mode, not BCD
         jsr     loadTestFile
         jsr     display
         rts
@@ -84,7 +84,7 @@ nextChar:
 	iny				; Increment column
 	inc	bufferColumn
 	
-	lda	bufferColumn			; Check for end-of-line
+	lda	bufferColumn		; Check for end-of-line
 	cmp	lineLengths,Y
 	bmi	widthCheck
 	jsr	spacesToScreenEdge
@@ -93,7 +93,7 @@ widthCheck:
 	cpy	#SCREEN_WIDTH
 	bmi	nextChar
 advanceLine:
-	inc	bufferLine			; Increment buffer line
+	inc	bufferLine		; Increment buffer line
 	inx
 
 	cpx	#SCREEN_HEIGHT * 2
@@ -104,7 +104,7 @@ advanceLine:
 .proc   spacesToScreenEdge
 	cpy	#SCREEN_WIDTH
 	bpl	done
-	lda	#$A0				; Space with high-bit set
+	lda	#$A0			; Space with high-bit set
 	iny
 	jmp	spacesToScreenEdge
 done:	rts
@@ -115,10 +115,16 @@ done:	rts
 ; BUFFER_ADDRESS = buffer + (displayBufferY * BUFFER_WIDTH) + displayBufferX 
 ;
 .proc   getBufferCellAddress
-	cpByte		BUFFER_ADDRESS,bufferLine
-	cpByte 		BUFFER_ADDRESS+1,#0
-	shiftWordLeft	BUFFER_ADDRESS,6		; Multiply by 64
-	addWord		BUFFER_ADDRESS,#<buffer
+	cpByte	BUFFER_ADDRESS,bufferLine
+	cpByte 	BUFFER_ADDRESS+1,#0
+	shWdLft	BUFFER_ADDRESS,6	; Multiply by 64
+	addWord	BUFFER_ADDRESS,#<buffer
+	rts
+.endproc
+
+.proc	loadTestFile
+	lda	#$40
+	sta	buffer
 	rts
 .endproc
 
