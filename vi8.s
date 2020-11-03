@@ -4,6 +4,8 @@ BUFFER_WIDTH	= 64
 BUFFER_HEIGHT	= 256
 LINE_ADDRESS	= 6
 BUFFER_ADDRESS	= 8
+bge             = bcs   ; Branch Carry Set is Branch Greater or Equal
+blt             = bcc   ; Branch Carry Clear is Branch Less Than
 
 .segment "CODE"
 
@@ -52,9 +54,9 @@ BUFFER_ADDRESS	= 8
 next:
 	asl	a		; Left shift lo-byte in A
 	rol	wordAddress+1	; Left shift carry into hi-byte
-	cpy	count
 	inx
-	bmi	next
+	cpx	count
+        bcc	next            ; bcc = Branch if X < count
 	sta	wordAddress	; Store what we're holding in A
 	pla			; Restore X
 	tax
@@ -81,32 +83,32 @@ nextLine:
 	jsr	getBufferCellAddress	; Get start address of line in buffer
 nextChar:
 	cpByte	{(LINE_ADDRESS),y},{BUFFER_ADDRESS,y}
-	iny				; Increment column
+	iny			    ; Increment column
 	inc	bufferColumn
 	
-	lda	bufferColumn		; Check for end-of-line
+	lda	bufferColumn	    ; Check for end-of-line
 	cmp	lineLengths,Y
-	bmi	widthCheck
+        bcc	widthCheck  ; Branch if bufferColumn < lineLengths,Y
 	jsr	spacesToScreenEdge
         jmp     advanceLine
 widthCheck:
 	cpy	#SCREEN_WIDTH
-	bmi	nextChar
+        bcc	nextChar            ; Branch if Y < SCREEN_WIDTH
 advanceLine:
-	inc	bufferLine		; Increment buffer line
+	inc	bufferLine	    ; Increment buffer line
 	inx
 
 	cpx	#SCREEN_HEIGHT * 2
-	bmi	nextLine
+        bcc	nextLine            ; Branch if X < SCREEN_HEIGHT*2
 	rts
 .endproc
 
 .proc   spacesToScreenEdge
 	cpy	#SCREEN_WIDTH
-	bpl	done
-	lda	#$A0			; Space with high-bit set
+        bcs	done                ; Branch if Y >= SCREEN_WIDTH
+	lda	#$A0	    	    ; Space with high-bit set
 	iny
-	jmp	spacesToScreenEdge
+        bne	spacesToScreenEdge
 done:	rts
 .endproc
 
